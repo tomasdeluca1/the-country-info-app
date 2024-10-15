@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { Line } from "react-chartjs-2";
+import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,7 +10,9 @@ import {
   Title,
   Tooltip,
   Legend,
-} from "chart.js";
+} from 'chart.js';
+import { useTheme } from './ThemeProvider';
+import { motion } from 'framer-motion';
 
 ChartJS.register(
   CategoryScale,
@@ -23,14 +25,22 @@ ChartJS.register(
 );
 
 function PopulationChart({ populationData }) {
+  const { theme } = useTheme();
+
   const chartData = {
     labels: populationData.map((item) => item.year),
     datasets: [
       {
-        label: "Population",
+        label: 'Population',
         data: populationData.map((item) => item.value),
-        borderColor: "rgb(75, 192, 192)",
+        borderColor:
+          theme === 'dracula' ? 'rgb(255, 122, 198)' : 'rgb(59, 130, 246)',
+        backgroundColor:
+          theme === 'dracula'
+            ? 'rgba(255, 122, 198, 0.5)'
+            : 'rgba(59, 130, 246, 0.5)',
         tension: 0.1,
+        fill: true,
       },
     ],
   };
@@ -39,11 +49,11 @@ function PopulationChart({ populationData }) {
     responsive: true,
     plugins: {
       legend: {
-        position: "top",
+        position: 'top',
       },
       title: {
         display: true,
-        text: "Population Over Time",
+        text: 'Population Over Time',
       },
     },
     scales: {
@@ -51,22 +61,27 @@ function PopulationChart({ populationData }) {
         beginAtZero: true,
         title: {
           display: true,
-          text: "Population",
+          text: 'Population',
         },
       },
       x: {
         title: {
           display: true,
-          text: "Year",
+          text: 'Year',
         },
       },
     },
   };
 
   return (
-    <div className="w-full h-64">
+    <motion.div
+      className="w-full h-64"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5 }}
+    >
       <Line data={chartData} options={options} />
-    </div>
+    </motion.div>
   );
 }
 
